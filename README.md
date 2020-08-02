@@ -18,6 +18,7 @@ Run the application:
 venv\Scripts\activate
 set FLASK_APP=artemis
 set FLASK_ENV=development
+flask init-db
 flask run
 ```
 
@@ -32,6 +33,11 @@ flask run -h localhost -p 3000
 After installing new packages to the venv, save the requirements to `requirements.txt` so that your dependencies are added to the repository.
 ```
 python -m pip freeze > requirements.txt
+```
+
+To delete the sqlite database, delete the folder `instance`. To reinstantiate a new database:
+```
+flask init-db
 ```
 
 

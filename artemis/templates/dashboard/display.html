@@ -1,8 +1,31 @@
 {% extends 'base.html' %}
 
+
+{% block javascript %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script>
+    $(function(){
+      $('.button-masked').click(function() {
+        var pid = $(this).parent().attr("id");
+        console.log(pid);
+        console.log(typeof(pid));
+        alert(pid);
+
+        var data = {'pid': pid};
+        console.log(data);
+
+        $.post( "display/edit_mask", {pid: pid});
+      })
+    });
+  </script>
+{% endblock %}
+
+
 {% block header %}
   <h1>{% block title %}Table Schema{% endblock %}</h1>
 {% endblock %}
+
 
 
 {% block config %}

@@ -1,6 +1,10 @@
 <!doctype html>
 <title>Artemis</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<head>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block javascript %}{% endblock %}
+</head>
 
 <nav>
   <h1><a href="{{ url_for('dashboard.index') }}">Artemis</a></h1>
