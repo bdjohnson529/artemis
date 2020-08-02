@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Dashboard{% endblock %}</h1>
+{% endblock %}
+
+
+<div>
+  <a href="{{ url_for('dashboard.index') }}">Register</a>
+</div>

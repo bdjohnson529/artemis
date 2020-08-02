@@ -131,4 +131,4 @@ def SumValues(server, database, table, pivot_column):
     df = io.executeQuery(server, database, query)
     df = df.set_index(pivot_column)
 
-    return df
+    return (df > 0)

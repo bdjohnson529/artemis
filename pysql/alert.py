@@ -27,12 +27,3 @@ def sendEmail(host, sender_email, recipient_email, subject, msg_html):
     s = smtplib.SMTP(host)
     s.sendmail(sender_email, recipient_email, msg.as_string())
     s.quit()
-
-
-def formatTable(html, color):
-    """
-    Format html table.
-    """
-    html = re.sub(r"<td>FAIL</td>", "<td bgcolor=\"" + color + "\">FAIL</td>", html)
-
-    return html

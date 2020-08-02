@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Pivot Selection{% endblock %}</h1>
+{% endblock %}
+
+
+{% block config %}
+  <p>{{ server|safe }}</p>
+  <p>{{ database|safe }}</p>
+  <p>{{ table|safe }}</p>
+{% endblock %}
+
+{% block content %}
+  {{ html|safe }}
+{% endblock %}
