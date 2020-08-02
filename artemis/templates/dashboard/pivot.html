@@ -1,14 +1,28 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Pivot Selection{% endblock %}</h1>
+  <h1>{% block title %}Table Schema{% endblock %}</h1>
 {% endblock %}
 
 
 {% block config %}
-  <p>{{ server|safe }}</p>
-  <p>{{ database|safe }}</p>
-  <p>{{ table|safe }}</p>
+  <div class="row">
+	  <div class="column"><p>{{ server|safe }}</p></div>
+	  <div class="column"><p>{{ database|safe }}</p></div>
+	  <div class="column"><p>{{ table|safe }}</p></div>
+  </div>
+
+  <form method="post">
+    <div>
+      <label for="server">Server</label>
+      <input name="server" id="server" value="{{ server|safe }}" required>
+      <label for="database">Database</label>
+      <input type="database" name="database" id="database" value="{{ database|safe }}" required>
+      <label for="table">Table</label>
+      <input type="table" name="table" id="table" value="{{ table|safe }}" required>
+      <input type="submit" value="Retrieve Schema">
+    </div>
+  </form>
 {% endblock %}
 
 {% block content %}

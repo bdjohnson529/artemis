@@ -16,5 +16,7 @@ def formatTable(html, color):
     return html
 
 
-def button(c):
-    return '<input name="{}" value="{{}}" />'.format(c)
+def styleButton(html):
+    html = re.sub(r"<button name=\"df\">False", "<button name=\"df\" class=\"button-false\">False", html)
+    
+    return html

@@ -6,9 +6,11 @@
 
 
 {% block config %}
-  <p>{{ server|safe }}</p>
-  <p>{{ database|safe }}</p>
-  <p>{{ table|safe }}</p>
+  <div class="row">
+	  <div class="column"><p>{{ server|safe }}</p></div>
+	  <div class="column"><p>{{ database|safe }}</p></div>
+	  <div class="column"><p>{{ table|safe }}</p></div>
+  </div>
 {% endblock %}
 
 {% block content %}

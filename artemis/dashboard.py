@@ -47,11 +47,6 @@ def index():
         try:
             # find faster way to verify table exists
             df= pysql.io.getTableSchema(server, database, table)
-            html = df.to_html()
-
-            f = open('test_again_again.html', 'w')
-            f.write(html)
-
             return redirect(url_for('dashboard.schema'))
         except:
             error = "Could not retrieve"
@@ -100,12 +95,13 @@ def pivot():
     df = pysql.pivot.SumValues(server, database, table, column)
 
     html = df.T.style.format('<button name="df">{}</button>').render()
+    html_fmt = pysql.render.styleButton(html)
+    body_html = "<h2>Sum Greater than Zero</h2>" + html_fmt
+
 
     f = open('test.html', 'w')
-    f.write(html)
+    f.write(html_fmt)
 
-    html_fmt = pysql.render.formatTable(html, "yellow")
-    body_html = "<h2>Sum Greater than Zero</h2>" + html_fmt
 
 
 
