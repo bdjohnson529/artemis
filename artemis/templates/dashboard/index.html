@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Dashboard{% endblock %}</h1>
+{% endblock %}
+
+
+{% block config %}
+  <form method="post">
+    <label for="server">Server</label>
+    <input name="server" id="server" required>
+    <label for="database">Database</label>
+    <input type="database" name="database" id="database" required>
+    <label for="table">Table</label>
+    <input type="table" name="table" id="table" required>
+    <input type="submit" value="Retrieve Schema">
+  </form>
+{% endblock %}
+
+
+{% block content %}
+
+	{{ table|safe }}
+
+{% endblock %}

@@ -1,0 +1,25 @@
+<!doctype html>
+<title>Artemis</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<nav>
+  <h1>Artemis</h1>
+</nav>
+
+<section class="content">
+
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+
+
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+
+  {% block config %}{% endblock %}
+
+  {% block content %}{% endblock %}
+
+
+</section>
