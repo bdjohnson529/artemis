@@ -1,6 +1,6 @@
 # Artemis
 
-Artemis empowers unit testing for data engineering teams.
+Artemis empowers unit testing for SQL Server databases.
 
 
 ## Setup
