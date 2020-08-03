@@ -5,19 +5,45 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   <script>
+    var DELAY = 500,
+        clicks = 0,
+        timer = null;
+
     $(function(){
-      $('.button-masked').click(function() {
+      $(".button-clickable")
+      .on("click", function(e){
+        // get cell ID
         var pid = $(this).parent().attr("id");
-        console.log(pid);
-        console.log(typeof(pid));
-        alert(pid);
-
         var data = {'pid': pid};
-        console.log(data);
 
-        $.post( "display/edit_mask", {pid: pid});
+        clicks++;  //count clicks
+        timer = setTimeout(function() {
+          if(clicks === 1) {
+            $.post( "display/toggle_mask",
+                    {pid: pid},
+                    function() {
+                      window.location.reload();
+                    }
+            );
+          } else if(clicks === 2) {
+            $.post( "display/notes",
+                    {pid: pid},
+                    function(result) {
+                      alert(result);
+                    }
+            );
+          };
+
+        clearTimeout(timer);
+        clicks = 0;  //after action performed, reset counter
+        }, DELAY);
       })
+      .on("dblclick", function(e){
+          e.preventDefault();  //cancel system double-click event
+      });
     });
+    
+
   </script>
 {% endblock %}
 

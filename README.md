@@ -28,6 +28,14 @@ flask run -h localhost -p 3000
 ```
 
 
+## Database
+Artemis uses a SQLite database to store pivots which are used to generate the dashboard. The database is instantiated by the command `flask init-db`. SQLite files are stored in the folder `instance`.
+
+To access the database using the command line, use the SQLite command line tool. Download the [Windows command-line tools](https://www.sqlite.org/2020/sqlite-tools-win32-x86-3320300.zip) from the [official SQLite webpage](https://www.sqlite.org/download.html). 
+1. Create a new folder named `C:\sqlite`.
+2. Extract the ZIP folder, and move the `.exe` files to the folder `C:\sqlite`.
+3. Add `C:\sqlite` to your Windows PATH. The PATH variables are set in the `Environment Variables` window.
+4. Open the database file using the command `sqlite3 artemis.sqlite`.
 
 ## Contributing
 After installing new packages to the venv, save the requirements to `requirements.txt` so that your dependencies are added to the repository.
