@@ -17,8 +17,14 @@ def formatTable(html, color):
 
 
 def styleButton(html):
-    html = re.sub(r"<button class=\"button-clickable\">False", "<button name=\"df\" class=\"button-clickable button-false\">False", html)
-    html = re.sub(r"<button class=\"button-clickable\">Masked", "<button name=\"df\" class=\"button-masked\" data-toggle='modal' data-target='#edit-modal'>Masked", html)
+    html = re.sub(r"<button class=\"button-clickable\">True",
+    	"<button name=\"df\" data-toggle='modal' data-target='#edit-modal'>True", html)
+
+    html = re.sub(r"<button class=\"button-clickable\">False", 
+    	"<button name=\"df\" class=\"button-false\" data-toggle='modal' data-target='#edit-modal'>False", html)
+
+    html = re.sub(r"<button class=\"button-clickable\">Masked", 
+    	"<button name=\"df\" class=\"button-masked\" data-toggle='modal' data-target='#edit-modal'>Masked", html)
 
     
     return html

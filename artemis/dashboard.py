@@ -189,8 +189,11 @@ def toggle_mask():
     return "success"
 
 
-@bp.route('/display/notes', methods=('GET', 'POST'))
-def notes():
+@bp.route('/display/retrieveData', methods=('GET', 'POST'))
+def retrieveData():
+    """
+    Retrieves data from pivot table.
+    """
     if request.method == 'POST':
         pid = request.form['pid']
 
@@ -228,9 +231,35 @@ def notes():
             notes = vals[0][3]
 
 
-        resp = {'Client': column_name,
+        resp = {'Indices': indices,
+                'Client': column_name,
                 'Column': row_name,
                 'Mask': mask,
                 'Notes': notes}
 
     return json.dumps(resp)
+
+
+@bp.route('/display/sendData', methods=('GET', 'POST'))
+def sendData():
+    """
+    Sends data to pivot table.
+    """
+    if request.method == 'POST':
+        indices = request.form['indices']
+        notes = request.form['notes']
+        mask = request.form['mask']
+
+
+        db = get_db()
+        rows = db.execute(
+            f"""UPDATE  pivot
+                SET     Mask = \"{mask}\",
+                        Notes = \"{notes}\"
+                WHERE   indices = \"{indices}\"
+            """
+        )
+        db.commit()
+
+
+    return "success"

@@ -5,14 +5,7 @@
 
   <script>
 
-    function ParseResponse(resp){
-      var obj = JSON.parse(resp);
-      console.log(obj);
-
-      return obj;
-    }
-
-
+    // called when modal is opened
     $(function(){
       $('#edit-modal').on('show.bs.modal', function(e) {
         var button = $(e.relatedTarget) // Button that triggered the modal
@@ -20,55 +13,90 @@
 
         modal = $(this);
 
-        
-        $.post( "display/notes", {pid: pid})
-          .then( function(result) {  ParseResponse(result)  })
-          .then( function(result) {  $(modal).find('.modal-title').html('Title') });
+        // this should be a GET request
+        $.post( "display/retrieveData", {pid: pid})
+          .then( function(result) {  return SetModal(result, modal)  })
+          //.then( function(result) {  ReplaceModal(modal); /*$(modal).find('.modal-title').html('Title')*/ });
 
       });
     })
 
 
+    // sets modal using API response
+    function SetModal(resp, modal){
+      var obj = JSON.parse(resp);
+      
+      // construct title
+      var client = obj['Client']
+      $(modal).find('.modal-title').html(client);
 
-    var DELAY = 500,
-        clicks = 0,
-        timer = null;
+      // construct body
+      var column = obj['Column']
+      var masked = obj['Mask']
+      $(modal).find('.modal-columnname').html(column);
 
-    $(function(){
-      $(".button-clickable")
-      .on("click", function(e){
+      var notes = 'Notes : '.concat(obj['Notes'])
+      $(modal).find('.modal-notes').html(notes);
 
-        // get cell ID
-        var pid = $(this).parent().attr("id");
-        var data = {'pid': pid};
 
-        clicks++;  //count clicks
-        timer = setTimeout(function() {
-          if(clicks === 1) {
-            $.post( "display/toggle_mask",
-                    {pid: pid},
-                    function() {
-                      window.location.reload();
-                    }
-            );
-          } else if(clicks === 2) {
-            $.post( "display/notes",
-                    {pid: pid},
-                    function(result) {
-                      alert(result);
-                    }
-            );
-          };
+      // set notes field
+      var notes = obj['Notes']
+      if(notes) {
+        $("input[name=notes]").attr('value', notes);
+      }
 
-        clearTimeout(timer);
-        clicks = 0;  //after action performed, reset counter
-        }, DELAY);
-      })
-      .on("dblclick", function(e){
-          e.preventDefault();  //cancel system double-click event
-      });
-    });
-    
+
+      // set mask radio button
+      var mask = obj['Mask']
+
+      console.log(mask);
+      if(mask == 1) {
+        $("input[name=mask-radio][value=mask]").attr('checked', true);
+      } else {
+        $("input[name=mask-radio][value=unmask]").attr('checked', true);
+      }
+
+      $(modal).find('.modal-mask').html(mask);
+
+
+      // set indices in modal div
+      var indices = obj['Indices']
+      $(modal).attr('indices', indices);
+
+      return obj;
+    }
+
+
+    // submits modal values to API
+    function SubmitChanges(){
+      
+      // get indices
+      var indices = $('#edit-modal').attr('indices');
+
+      // interpret mask value
+      var value = $('input[name=mask-radio]:checked').val();
+      var mask;
+      if(value == 'mask'){
+        mask = 1;
+      } else {
+        mask = 0;
+      }
+
+      // get notes
+      notes = $("input[name=notes]").val();
+
+      data = {'indices': indices,
+              'notes': notes,
+              'mask': mask}
+
+
+      $.post( "display/sendData", data)
+        .then( function(result) {  location.reload()  })
+        //.then( function(result) {  ReplaceModal(modal); /*$(modal).find('.modal-title').html('Title')*/ });
+
+      console.log(data);
+
+    }
 
   </script>
 {% endblock %}
@@ -85,19 +113,30 @@
   <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#edit-modal">Open Modal</button>
 
   <!-- Modal -->
-  <div id="edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div id="edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" indices="">
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
-                  <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                  <h4 class="modal-title" id="myModalLabel">Client</h4>
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               </div>
               <div class="modal-body edit-content">
-                  ...
+                <b><p class="modal-columnname">Column Name</p></b>
+
+                <div id="notes">
+                  <p>Notes</p>
+                  <input type="text" class="form-control" id="notes" name="notes" placeholder="Notes">
+                </div>
+
+                <div id="mask-select">
+                  <label class="radio-inline"><input type="radio" name="mask-radio" value="mask">Masked</label>
+                  <label class="radio-inline"><input type="radio" name="mask-radio" value="unmask">Unmasked</label>
+                </div>
+
               </div>
               <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <button type="button" class="btn btn-primary" onclick="SubmitChanges()">Save changes</button>
               </div>
           </div>
       </div>
