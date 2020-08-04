@@ -4,6 +4,7 @@ from flask import (
 from werkzeug.exceptions import abort
 
 import re
+import json
 import pandas as pd
 import numpy as np
 
@@ -193,8 +194,6 @@ def notes():
     if request.method == 'POST':
         pid = request.form['pid']
 
-        print(pid)
-
         match = re.search(r"row\d+_col\d+", pid)
         val = match.group()
         arr = val.split('_')
@@ -202,12 +201,14 @@ def notes():
         col = arr[1][3:]
         indices = f"({row}, {col})"
 
-        print(indices)
 
 
         db = get_db()
         rows = db.execute(
-            f"""SELECT  Notes
+            f"""SELECT  Row_Name,
+                        Column_Name,
+                        Mask,
+                        Notes
                 FROM    pivot
                 WHERE   indices = \"{indices}\"
             """
@@ -215,6 +216,21 @@ def notes():
 
         vals = [tuple(r) for r in rows]
 
-        print(vals)
+        if(len(vals) > 1):
+            return "Invalid API call."
 
-    return "success"
+        row_name = vals[0][0]
+        column_name = vals[0][1]
+        mask = vals[0][2]
+
+        notes = ""
+        if vals[0][3] is not "None":
+            notes = vals[0][3]
+
+
+        resp = {'Client': column_name,
+                'Column': row_name,
+                'Mask': mask,
+                'Notes': notes}
+
+    return json.dumps(resp)

@@ -2,9 +2,34 @@
 
 
 {% block javascript %}
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   <script>
+
+    function ParseResponse(resp){
+      var obj = JSON.parse(resp);
+      console.log(obj);
+
+      return obj;
+    }
+
+
+    $(function(){
+      $('#edit-modal').on('show.bs.modal', function(e) {
+        var button = $(e.relatedTarget) // Button that triggered the modal
+        var pid = $(e.relatedTarget).parent().attr('id');
+
+        modal = $(this);
+
+        
+        $.post( "display/notes", {pid: pid})
+          .then( function(result) {  ParseResponse(result)  })
+          .then( function(result) {  $(modal).find('.modal-title').html('Title') });
+
+      });
+    })
+
+
+
     var DELAY = 500,
         clicks = 0,
         timer = null;
@@ -12,6 +37,7 @@
     $(function(){
       $(".button-clickable")
       .on("click", function(e){
+
         // get cell ID
         var pid = $(this).parent().attr("id");
         var data = {'pid': pid};
@@ -55,6 +81,29 @@
 
 
 {% block config %}
+
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#edit-modal">Open Modal</button>
+
+  <!-- Modal -->
+  <div id="edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>
+              <div class="modal-body edit-content">
+                  ...
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+
   <div class="row">
 	  <div class="column"><p>{{ server|safe }}</p></div>
 	  <div class="column"><p>{{ database|safe }}</p></div>
