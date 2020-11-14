@@ -13,9 +13,10 @@
 
         modal = $(this);
 
+        console.log(pid);
         // this should be a GET request
-        $.post( "display/retrieveData", {pid: pid})
-          .then( function(result) {  return SetModal(result, modal)  })
+        $.post( "api/retrieveData", {pid: pid})
+          .then( function(result) {  console.log(result); return SetModal(result, modal)  })
           //.then( function(result) {  ReplaceModal(modal); /*$(modal).find('.modal-title').html('Title')*/ });
 
       });
@@ -90,10 +91,13 @@
               'mask': mask}
 
 
-      $.post( "display/sendData", data)
-        .then( function(result) {  location.reload()  })
-        //.then( function(result) {  ReplaceModal(modal); /*$(modal).find('.modal-title').html('Title')*/ });
+      console.log(data);
 
+
+      //$.post( "api/sendData", data)
+      //  .then( function(result) {  console.log(result); location.reload()  })
+        //.then( function(result) {  ReplaceModal(modal); /*$(modal).find('.modal-title').html('Title')*/ });
+  
       console.log(data);
 
     }

@@ -1,7 +1,6 @@
 import sqlite3
-
 import click
-from flask import current_app, g
+from flask import Blueprint, current_app, g
 from flask.cli import with_appcontext
 
 
@@ -21,7 +20,6 @@ def close_db(e=None):
 
     if db is not None:
         db.close()
-
 
 def init_db():
     db = get_db()

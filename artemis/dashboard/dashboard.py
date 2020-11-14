@@ -1,6 +1,4 @@
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, session
-)
+from flask import Blueprint, flash, g, redirect, render_template, request, url_for, session
 from werkzeug.exceptions import abort
 
 import re
@@ -11,7 +9,7 @@ import numpy as np
 from artemis.db import get_db
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 import pysql.io
 import pysql.alert
 import pysql.pivot
@@ -158,108 +156,3 @@ def display():
     f.write(html_fmt)
 
     return render_template('dashboard/display.html', html=body_html)
-
-
-@bp.route('/display/toggle_mask', methods=('GET', 'POST'))
-def toggle_mask():
-    if request.method == 'POST':
-        pid = request.form['pid']
-
-        print(pid)
-
-        match = re.search(r"row\d+_col\d+", pid)
-        val = match.group()
-        arr = val.split('_')
-        row = arr[0][3:]
-        col = arr[1][3:]
-        indices = f"({row}, {col})"
-
-        print(indices)
-
-
-        db = get_db()
-        db.execute(
-            f"""UPDATE pivot
-                SET     mask = 1 - mask
-                WHERE   indices = \"{indices}\"
-            """
-        )
-        db.commit()
-
-    return "success"
-
-
-@bp.route('/display/retrieveData', methods=('GET', 'POST'))
-def retrieveData():
-    """
-    Retrieves data from pivot table.
-    """
-    if request.method == 'POST':
-        pid = request.form['pid']
-
-        match = re.search(r"row\d+_col\d+", pid)
-        val = match.group()
-        arr = val.split('_')
-        row = arr[0][3:]
-        col = arr[1][3:]
-        indices = f"({row}, {col})"
-
-
-
-        db = get_db()
-        rows = db.execute(
-            f"""SELECT  Row_Name,
-                        Column_Name,
-                        Mask,
-                        Notes
-                FROM    pivot
-                WHERE   indices = \"{indices}\"
-            """
-        ).fetchall()
-
-        vals = [tuple(r) for r in rows]
-
-        if(len(vals) > 1):
-            return "Invalid API call."
-
-        row_name = vals[0][0]
-        column_name = vals[0][1]
-        mask = vals[0][2]
-
-        notes = ""
-        if vals[0][3] is not "None":
-            notes = vals[0][3]
-
-
-        resp = {'Indices': indices,
-                'Client': column_name,
-                'Column': row_name,
-                'Mask': mask,
-                'Notes': notes}
-
-    return json.dumps(resp)
-
-
-@bp.route('/display/sendData', methods=('GET', 'POST'))
-def sendData():
-    """
-    Sends data to pivot table.
-    """
-    if request.method == 'POST':
-        indices = request.form['indices']
-        notes = request.form['notes']
-        mask = request.form['mask']
-
-
-        db = get_db()
-        rows = db.execute(
-            f"""UPDATE  pivot
-                SET     Mask = \"{mask}\",
-                        Notes = \"{notes}\"
-                WHERE   indices = \"{indices}\"
-            """
-        )
-        db.commit()
-
-
-    return "success"
